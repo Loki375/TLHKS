@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Máy lọc không khí thông minh – Prototype 7 cải tiến</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f1f6f6;--card:#fff;--ink:#12303a;--mut:#58727a;--acc:#1f8f86;--soft:#e2f1ef;--line:#d3e2e3;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1b1f;--card:#172a2f;--ink:#e6f1f1;--mut:#93aeb3;--acc:#4fd1c0;--soft:#1d3a3d;--line:#27424a}}
+:root[data-theme="dark"]{--bg:#0e1b1f;--card:#172a2f;--ink:#e6f1f1;--mut:#93aeb3;--acc:#4fd1c0;--soft:#1d3a3d;--line:#27424a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.55}
+main{max-width:1080px;margin:0 auto;padding:28px 18px 48px}
+h1{font-size:clamp(26px,4.4vw,40px);line-height:1.15;margin:0 0 8px;font-weight:800;letter-spacing:-.01em}
+.sub{color:var(--mut);margin:0 0 22px;max-width:62ch}
+.seg{display:inline-flex;background:var(--soft);border-radius:999px;padding:4px;margin-bottom:14px}
+.seg button{border:0;background:none;color:var(--mut);font:inherit;font-weight:700;padding:8px 20px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--acc);color:#fff}
+.grid{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:860px){.grid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
+.stage{display:flex;justify-content:center;background:linear-gradient(var(--soft),var(--card));border-radius:14px}
+svg{max-width:100%;height:auto;display:block}
+.hot{cursor:pointer}.hot circle{fill:var(--acc);stroke:#fff;stroke-width:2}.hot text{fill:#fff;font:700 12px 'Be Vietnam Pro',sans-serif;pointer-events:none}
+.hot.on circle{fill:#f2a33a}.hot:focus{outline:none}.hot:focus-visible circle{stroke:#12303a;stroke-width:3}
+.before .up,.before .hot{display:none}
+.cap{font-size:13px;color:var(--mut);margin:10px 2px 0}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}
+.tabs button{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:13px;padding:5px 11px;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+.detail h2{margin:0 0 6px;font-size:20px}
+.detail p{margin:0 0 10px}
+.detail .k{font-weight:700}
+.detail .lim{background:var(--soft);border-radius:10px;padding:9px 12px;font-size:14px}
+.src{font-size:13px;color:var(--mut)}
+h3{margin:30px 0 4px;font-size:22px}
+.demo{display:grid;gap:18px;grid-template-columns:1fr;align-items:start}
+@media(min-width:860px){.demo{grid-template-columns:minmax(0,1fr) 300px}}
+.ctrl label{display:block;font-weight:700;margin:0 0 4px}
+input[type=range]{width:100%;accent-color:var(--acc)}
+.note{font-size:13px;color:var(--mut)}
+.phone{width:290px;max-width:100%;margin:0 auto;background:#0f1d21;border-radius:34px;padding:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.scr{background:#f5fafa;color:#12303a;border-radius:24px;padding:16px 14px;min-height:470px;transition:filter .3s}
+.scr.dim{filter:brightness(.55)}
+.top{display:flex;justify-content:space-between;font-size:12px;color:#58727a}
+.big{font-size:60px;font-weight:800;line-height:1;margin:8px 0 0}
+.big small{font-size:14px;font-weight:500;color:#58727a}
+.pill{display:inline-block;color:#fff;font-weight:700;font-size:13px;padding:2px 12px;border-radius:999px;margin:6px 0 10px}
+.row{display:flex;gap:8px;margin:8px 0}
+.mini{flex:1;background:#e5f0f0;border-radius:12px;padding:8px 10px;font-size:12px;color:#58727a}
+.mini b{display:block;font-size:17px;color:#12303a}
+.bars{display:flex;gap:4px;align-items:flex-end;height:30px;margin:4px 0 2px}
+.bars i{flex:1;background:#cfe0e0;border-radius:3px}.bars i.f{background:#1f8f86}
+.modes{display:flex;gap:6px;margin:10px 0}
+.modes button{flex:1;border:1px solid #c5d8d8;background:#fff;color:#12303a;font:inherit;font-size:13px;font-weight:700;padding:7px 2px;border-radius:10px;cursor:pointer}
+.modes button[aria-pressed=true]{background:#1f8f86;color:#fff;border-color:#1f8f86}
+.man{display:flex;align-items:center;justify-content:center;gap:12px;font-size:13px;height:28px}
+.man button{width:28px;height:28px;border-radius:50%;border:1px solid #c5d8d8;background:#fff;cursor:pointer;font-weight:700;color:#12303a}
+.fl{height:8px;background:#cfe0e0;border-radius:6px;overflow:hidden;margin:4px 0}.fl i{display:block;height:100%;background:#1f8f86}
+.warn{color:#c2410c;font-weight:700;font-size:12px}
+</style>
+</head>
+<body>
+<main>
+<h1>Máy lọc không khí thông minh: 7 cải tiến</h1>
+<p class="sub">Bản mockup và prototype tương tác dựa trên bảng cơ sở khoa học. Chuyển giữa “Trước” và “Sau”, bấm các điểm đánh số trên thân máy để xem cơ sở kỹ thuật, rồi thử mô phỏng vòng điều khiển ở phần ứng dụng.</p>
+
+<div class="seg" role="group" aria-label="Phiên bản">
+<button id="bBefore" aria-pressed="false">Trước (tiêu chuẩn)</button>
+<button id="bAfter" aria-pressed="true">Sau (nâng cấp)</button>
+</div>
+
+<div class="grid">
+<div class="card">
+<div class="stage">
+<svg id="dev" class="after" viewBox="0 0 400 470" width="400" role="img" aria-label="Bản vẽ máy lọc không khí với 7 điểm cải tiến">
+<ellipse cx="200" cy="448" rx="120" ry="9" fill="#12303a" opacity=".12"/>
+<!-- thân máy -->
+<rect x="100" y="96" width="200" height="338" rx="20" fill="#fafcfc" stroke="#b4c6c9" stroke-width="2"/>
+<rect x="266" y="96" width="34" height="338" rx="0" fill="#eef4f5"/>
+<rect x="100" y="96" width="200" height="338" rx="20" fill="none" stroke="#b4c6c9" stroke-width="2"/>
+<!-- khe thoát khí -->
+<g id="vent" stroke="#b4c6c9" stroke-width="2"><path d="M272 250h22M272 258h22M272 266h22M272 274h22M272 282h22M272 290h22M272 298h22M272 306h22M272 314h22M272 322h22M272 330h22M272 338h22M272 346h22M272 354h22M272 362h22M272 370h22M272 378h22"/></g>
+<!-- tay cầm -->
+<rect x="276" y="140" width="22" height="42" rx="7" fill="#e3ecee" stroke="#b4c6c9" stroke-width="2"/>
+<!-- nắp lọc đáy -->
+<rect x="116" y="398" width="130" height="22" rx="6" fill="#eef4f5" stroke="#b4c6c9" stroke-width="2"/>
+<path d="M130 409h102" stroke="#b4c6c9" stroke-width="3" stroke-linecap="round"/>
+<!-- cụm điều khiển phía trên -->
+<g class="up">
+<rect x="100" y="70" width="200" height="50" rx="22" fill="#14232a"/>
+<rect x="116" y="80" width="112" height="30" rx="8" fill="#0b161b"/>
+<text id="sPm" x="172" y="102" text-anchor="middle" font-size="20" font-weight="800" fill="#4fd1c0" font-family="'Be Vietnam Pro',sans-serif">25</text>
+<text x="124" y="92" font-size="8" fill="#7fa3aa" font-family="'Be Vietnam Pro',sans-serif">PM2.5</text>
+<text id="sTH" x="222" y="92" text-anchor="end" font-size="8" fill="#7fa3aa" font-family="'Be Vietnam Pro',sans-serif">29°C 68%</text>
+<text id="sLv" x="222" y="104" text-anchor="end" font-size="8" fill="#7fa3aa" font-family="'Be Vietnam Pro',sans-serif">Quạt 2</text>
+<!-- biểu tượng Wi-Fi -->
+<g stroke="#4fd1c0" stroke-width="2.4" fill="none" stroke-linecap="round"><path d="M248 90a14 14 0 0 1 28 0" transform="translate(0 4)"/><path d="M253 96a7 7 0 0 1 18 0" transform="translate(-2 3)"/></g><circle cx="262" cy="104" r="2.4" fill="#4fd1c0"/>
+</g>
+<!-- chỉ báo lọc trên mặt trước -->
+<g class="up"><rect x="122" y="168" width="64" height="26" rx="13" fill="#e2f1ef" stroke="#1f8f86"/><rect x="128" y="176" width="40" height="10" rx="5" fill="#1f8f86"/><circle cx="176" cy="181" r="3" fill="#f2a33a" id="sFlt"/></g>
+<!-- dải LED viền đáy -->
+<rect class="up" id="led" x="116" y="424" width="170" height="6" rx="3" fill="#2fa88f"/>
+<!-- điểm cải tiến -->
+<g class="hot" data-i="0" tabindex="0" role="button" aria-label="Cải tiến 1"><circle cx="146" cy="95" r="12"/><text x="146" y="99.5" text-anchor="middle">1</text></g>
+<g class="hot" data-i="1" tabindex="0" role="button" aria-label="Cải tiến 2"><circle cx="283" cy="228" r="12"/><text x="283" y="232.5" text-anchor="middle">2</text></g>
+<g class="hot" data-i="2" tabindex="0" role="button" aria-label="Cải tiến 3"><circle cx="142" cy="218" r="12"/><text x="142" y="222.5" text-anchor="middle">3</text></g>
+<g class="hot" data-i="3" tabindex="0" role="button" aria-label="Cải tiến 4"><circle cx="300" cy="436" r="12"/><text x="300" y="440.5" text-anchor="middle">4</text></g>
+<g class="hot" data-i="4" tabindex="0" role="button" aria-label="Cải tiến 5"><circle cx="262" cy="64" r="12"/><text x="262" y="68.5" text-anchor="middle">5</text></g>
+<g class="hot" data-i="5" tabindex="0" role="button" aria-label="Cải tiến 6"><circle cx="181" cy="368" r="12"/><text x="181" y="372.5" text-anchor="middle">6</text></g>
+<g class="hot" data-i="6" tabindex="0" role="button" aria-label="Cải tiến 7"><circle cx="318" cy="161" r="12"/><text x="318" y="165.5" text-anchor="middle">7</text></g>
+</svg>
+</div>
+<p class="cap" id="cap">Bản sau: cụm điều khiển cảm ứng, màn hình PM2.5/nhiệt độ/độ ẩm, đèn LED viền đáy, tay cầm và nắp lọc xoay.</p>
+</div>
+
+<div class="card detail">
+<div class="tabs" role="tablist" id="tabs"></div>
+<div id="det"></div>
+</div>
+</div>
+
+<h3>Prototype ứng dụng: thử vòng điều khiển kín</h3>
+<p class="sub">Kéo thanh PM2.5 để mô phỏng mức ô nhiễm; thân máy phía trên cập nhật theo thời gian thực. Số liệu dB và nhiệt độ/độ ẩm chỉ mang tính minh hoạ.</p>
+<div class="demo card">
+<div class="ctrl">
+<label for="pm">Nồng độ bụi PM2.5 trong phòng: <span id="pmv">25</span> µg/m³</label>
+<input type="range" id="pm" min="3" max="250" value="25">
+<p class="note">Quy tắc điều khiển minh hoạ: dưới 12 → quạt 1; dưới 35 → quạt 2; dưới 75 → quạt 3; dưới 150 → quạt 4; từ 150 trở lên → quạt 5. Chế độ ngủ giới hạn tối đa quạt 2 và làm mờ đèn.</p>
+<label for="hrs" style="margin-top:14px">Giờ đã chạy của bộ lọc: <span id="hv">900</span> / 2920 giờ</label>
+<input type="range" id="hrs" min="0" max="2920" value="900">
+<p class="note">Giả định 8 giờ/ngày × 12 tháng. Cảnh báo thay lọc khi còn dưới 15%.</p>
+</div>
+<div class="phone"><div class="scr" id="scr">
+<div class="top"><span>Phòng ngủ</span><span id="wifi">Wi-Fi đã kết nối</span></div>
+<div class="big"><span id="aPm">25</span> <small>µg/m³ PM2.5</small></div>
+<span class="pill" id="aSt">Trung bình</span>
+<div class="row"><div class="mini">Nhiệt độ<b>29°C</b></div><div class="mini">Độ ẩm<b>68%</b></div><div class="mini">Độ ồn<b id="aDb">28 dB</b></div></div>
+<div class="note" style="margin-top:6px">Tốc độ quạt <b id="aLv">2</b>/5</div>
+<div class="bars" id="bars"></div>
+<div class="modes" id="modes">
+<button data-m="auto" aria-pressed="true">Tự động</button>
+<button data-m="night" aria-pressed="false">Ngủ</button>
+<button data-m="manual" aria-pressed="false">Thủ công</button>
+</div>
+<div class="man" id="man" style="visibility:hidden"><button id="mm" aria-label="Giảm quạt">−</button><span>Quạt <b id="ml">2</b></span><button id="mp" aria-label="Tăng quạt">+</button></div>
+<div class="note">Tuổi thọ bộ lọc <b id="fp">69%</b></div>
+<div class="fl"><i id="fb" style="width:69%"></i></div>
+<div class="warn" id="fw"></div>
+</div></div>
+</div>
+</main>
+<script>
+const D=[
+{t:"Hiển thị chất lượng không khí",s:"Hiển thị",w:"Màn hình trên thân máy cho biết PM2.5, nhiệt độ và độ ẩm ngay tại chỗ, thay cho vỏ trơn không có thông tin.",k:"Cảm biến PM2.5 dùng hồng ngoại (rẻ, kém chính xác) hoặc laser (chính xác hơn). Cảm biến thương mại có sai số khoảng ±15 µg/m³; nhiệt độ cũng ảnh hưởng độ chính xác.",l:"Đánh đổi chi phí và độ chính xác: cảm biến hồng ngoại rẻ hơn nhưng sai số lớn hơn laser.",r:"Vacuumwars, Housefresh, IQAir, GoveeLife"},
+{t:"Tự động điều chỉnh tốc độ quạt",s:"Quạt tự động",w:"Cảm biến đo bụi, bộ điều khiển so với ngưỡng rồi đặt tốc độ quạt tương ứng. Không khí sạch trở lại thì quạt giảm.",k:"Hệ điều khiển vòng kín. Một bằng sáng chế mô tả chỉ số ô nhiễm = 0,5×chỉ số PM10 + 0,5×chỉ số PM2.5, chia thành các mức để điều khiển quạt. Blueair ở chế độ Auto làm tương tự.",l:"Cần chọn ngưỡng sao cho quạt không đổi mức liên tục khi bụi dao động quanh ngưỡng.",r:"Bằng sáng chế Mỹ (USPTO), Blueair, Xiaomi"},
+{t:"Cảnh báo và theo dõi tuổi thọ bộ lọc",s:"Tuổi thọ lọc",w:"Biểu tượng và thanh tuổi thọ báo khi cần thay lọc, hiển thị cả trên máy lẫn trên ứng dụng.",k:"Hai cách tính: (a) đếm giờ chạy quạt theo tốc độ; (b) kiểm tra CCM theo tiêu chuẩn GB18801, phơi lọc dưới lượng PM2.5 lớn tới khi CADR giảm 50%. Đèn báo thực tế sáng trong khoảng 6–24 tháng.",l:"Hướng đơn giản là đếm giờ; hướng phức tạp hơn là thuật toán airflow hoặc cảm biến áp suất chênh lệch. Chọn theo ngân sách linh kiện.",r:"Smart Air, Rabbit Air, Dyson"},
+{t:"Chế độ ngủ thông minh",s:"Chế độ ngủ",w:"Ban đêm đèn LED mờ đi, màn hình tối và quạt chỉ tăng tới mức trung bình để giữ độ ồn thấp.",k:"WHO khuyến nghị tiếng ồn phòng ngủ ban đêm dưới 30 dB(A) để ngủ tốt. Ngưỡng này là căn cứ đặt tốc độ quạt tối đa ở chế độ ngủ.",l:"Giới hạn quạt ở chế độ ngủ làm giảm lưu lượng lọc khi bụi cao; cần cân đối.",r:"WHO (1999, 2009), Blueair"},
+{t:"Điều khiển và theo dõi qua ứng dụng",s:"Ứng dụng",w:"Xem số liệu từ xa, xem lịch sử, đặt ngưỡng cảnh báo, chuyển giữa chế độ thủ công và tự động.",k:"Kiến trúc IoT: cảm biến gửi dữ liệu qua Wi-Fi lên ứng dụng. Chế độ kép tạo vòng điều khiển kín giữa cường độ lọc và mức ô nhiễm đo được.",l:"Cần module Wi-Fi và phần mềm ứng dụng, làm tăng chi phí linh kiện.",r:"Nghiên cứu IoT (IRJET), IQAir AirVisual, GoveeHome"},
+{t:"Bộ lọc dễ tháo lắp, thay thế",s:"Thay lọc",w:"Nắp đáy xoay ngược chiều kim đồng hồ để mở, thay lõi lọc rồi xoay thuận chiều để khoá. Không cần vít hay dụng cụ.",k:"Dùng khớp cài hoặc nắp xoay thay vì vít, giúp người dùng tự bảo trì. Một số hãng bỏ hẳn nhu cầu vệ sinh, sấy khô định kỳ.",l:"Khớp cài phải đủ kín để không rò khí chưa lọc quanh lõi lọc.",r:"Argos, Dyson"},
+{t:"Thiết kế nhỏ gọn, dễ di chuyển",s:"Nhỏ gọn",w:"Thân máy thon, nhẹ và có tay cầm để chuyển giữa phòng ngủ, phòng trọ, phòng học.",k:"Tối ưu tỉ lệ công suất lọc trên kích thước (CADR phù hợp diện tích phòng), trọng lượng nhẹ, có tay cầm. Ví dụ QT3: lọc HEPA khoảng 800 giờ, tức khoảng 3 tháng nếu chạy 8 giờ/ngày.",l:"Máy nhỏ gọn vẫn phải cân đối giữa kích thước và tần suất thay lọc.",r:"Walmart, Smart Air (QT3)"}
+];
+const $=s=>document.querySelector(s);
+const tabs=$('#tabs'),det=$('#det');
+D.forEach((d,i)=>{const b=document.createElement('button');b.textContent=(i+1)+'. '+d.s;b.setAttribute('role','tab');b.onclick=()=>sel(i);tabs.appendChild(b)});
+function sel(i){
+ [...tabs.children].forEach((b,j)=>b.setAttribute('aria-selected',i===j));
+ document.querySelectorAll('.hot').forEach(h=>h.classList.toggle('on',+h.dataset.i===i));
+ const d=D[i];
+ det.innerHTML=`<h2>${i+1}. ${d.t}</h2><p class="k">Trên máy</p><p>${d.w}</p><p class="k">Cơ sở khoa học / kỹ thuật</p><p>${d.k}</p><p class="lim"><b>Hạn chế:</b> ${d.l}</p><p class="src">Nguồn tham khảo: ${d.r}</p>`;
+}
+document.querySelectorAll('.hot').forEach(h=>{h.onclick=()=>sel(+h.dataset.i);h.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();sel(+h.dataset.i)}}});
+function ver(a){
+ $('#dev').setAttribute('class',a?'after':'before');
+ $('#bAfter').setAttribute('aria-pressed',a);$('#bBefore').setAttribute('aria-pressed',!a);
+ $('#cap').textContent=a?'Bản sau: cụm điều khiển cảm ứng, màn hình PM2.5/nhiệt độ/độ ẩm, đèn LED viền đáy, tay cầm và nắp lọc xoay.':'Bản trước: vỏ trơn, không có mặt hiển thị, khe thoát khí dạng lưới ở cạnh bên, vận hành bằng nút bấm cơ khí.';
+}
+$('#bAfter').onclick=()=>ver(true);$('#bBefore').onclick=()=>ver(false);
+// mô phỏng
+const DB=[22,28,35,41,47],ST=[[12,'Tốt','#2fa88f'],[35,'Trung bình','#8aa62c'],[55,'Kém','#d98a1b'],[150,'Xấu','#d9532f'],[1e9,'Rất xấu','#a63d6b']];
+let mode='auto',man=2;
+const bars=$('#bars');for(let i=0;i<5;i++){const e=document.createElement('i');e.style.height=(8+i*5)+'px';bars.appendChild(e)}
+function lvl(p){return p<12?1:p<35?2:p<75?3:p<150?4:5}
+function upd(){
+ const p=+$('#pm').value,h=+$('#hrs').value;
+ let L=mode==='auto'?lvl(p):mode==='night'?Math.min(lvl(p),2):man;
+ const st=ST.find(x=>p<x[0]);
+ $('#pmv').textContent=p;$('#aPm').textContent=p;$('#sPm').textContent=p;$('#sPm').setAttribute('fill',st[2]);
+ $('#aSt').textContent=st[1];$('#aSt').style.background=st[2];
+ $('#led').setAttribute('fill',st[2]);$('#led').setAttribute('opacity',mode==='night'?.25:1);
+ $('#aLv').textContent=L;$('#sLv').textContent='Quạt '+L+(mode==='night'?' • Ngủ':'');
+ [...bars.children].forEach((e,i)=>e.classList.toggle('f',i<L));
+ const db=DB[L-1];$('#aDb').textContent=db+' dB';$('#aDb').style.color=db<30?'#1f8f86':'#c2410c';
+ $('#scr').classList.toggle('dim',mode==='night');
+ $('#man').style.visibility=mode==='manual'?'visible':'hidden';$('#ml').textContent=man;
+ const f=Math.max(0,Math.round(100*(1-h/2920)));
+ $('#hv').textContent=h;$('#fp').textContent=f+'%';$('#fb').style.width=f+'%';
+ $('#fw').textContent=f<15?'Sắp hết tuổi thọ, cần thay bộ lọc':'';
+ $('#sFlt').setAttribute('fill',f<15?'#d9532f':'#2fa88f');
+}
+$('#pm').oninput=upd;$('#hrs').oninput=upd;
+document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('#modes button').forEach(x=>x.setAttribute('aria-pressed',x===b));upd()});
+$('#mm').onclick=()=>{man=Math.max(1,man-1);upd()};$('#mp').onclick=()=>{man=Math.min(5,man+1);upd()};
+sel(0);upd();
+</script>
+</body>
+</html>
